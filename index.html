@@ -1,96 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
   <title>Will You Marry Me?</title>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
   <style>
     body {
-      background: linear-gradient(to bottom right, #ffc0cb, #ffe4e1);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #ffe6f0;
+      font-family: Arial, sans-serif;
       text-align: center;
-      padding: 50px;
-      color: #333;
+      padding-top: 100px;
     }
-
     h1 {
-      font-size: 3em;
-      margin-bottom: 30px;
+      font-size: 2.5em;
+      color: #cc0066;
     }
-
     img {
       width: 300px;
-      height: auto;
       border-radius: 20px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-      margin-bottom: 30px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      margin: 20px;
     }
-
     button {
       font-size: 1.5em;
       padding: 15px 40px;
       margin: 20px;
-      border: none;
       border-radius: 10px;
+      border: none;
       cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .yes {
-      background-color: #28a745;
       color: white;
     }
-
-    .yes:hover {
-      background-color: #218838;
-    }
-
-    .no {
-      background-color: #dc3545;
-      color: white;
-    }
-
-    .no:hover {
-      background-color: #c82333;
-    }
-
-    .footer {
-      margin-top: 50px;
-      font-size: 0.9em;
-      color: #777;
+    .yes { background-color: #28a745; }
+    .no { background-color: #dc3545; }
+    #status {
+      font-size: 1.2em;
+      margin-top: 20px;
+      color: #333;
     }
   </style>
 </head>
 <body>
 
   <h1>Will You Marry Me? 💍</h1>
-  <img src="https://i.imgur.com/Qp0s2tD.jpg" alt="Couple Image" />
+  <img src="https://thumbs.dreamstime.com/b/cute-cartoon-couple-holding-heart-valentines-day-love-surrounded-floating-hearts-set-against-soft-pink-background-354792627.jpg" alt="Couple" />
 
   <div>
     <button class="yes" onclick="submitAnswer('yes')">Yes 💖</button>
     <button class="no" onclick="submitAnswer('no')">No 😢</button>
   </div>
 
-  <div class="footer">Made with ❤️ for someone special</div>
+  <div id="status"></div>
 
   <script>
+    // ✅ Your Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCnVWChmC7yIMpvU0OZRMda5nrIMdYLpiw",
+      authDomain: "praposal--response.firebaseapp.com",
+      databaseURL: "https://praposal--response-default-rtdb.firebaseio.com",
+      projectId: "praposal--response",
+      storageBucket: "praposal--response.firebasestorage.app",
+      messagingSenderId: "557398356613",
+      appId: "1:557398356613:web:376c94a2bdcc98f57aafec"
+    };
+
+    // ✅ Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // ✅ Save answer to database
     function submitAnswer(answer) {
-      fetch('/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ answer: answer })
-      })
-      .then(response => response.json())
-      .then(data => {
-        alert("Your answer has been saved. Thank you! 💌");
-      })
-      .catch(error => {
-        alert("Something went wrong. Please try again later.");
-        console.error('Error:', error);
+      database.ref("proposal/response").set({
+        answer: answer,
+        timestamp: Date.now()
+      }).then(() => {
+        document.getElementById("status").innerText = "Your answer has been recorded 💌";
+      }).catch(error => {
+        document.getElementById("status").innerText = "Error saving your answer: " + error.message;
       });
     }
   </script>
-
 </body>
 </html>
