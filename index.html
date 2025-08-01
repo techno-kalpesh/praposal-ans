@@ -52,33 +52,51 @@
 
   <div id="status"></div>
 
-  <script>
-    // ✅ Your Firebase Config
-    const firebaseConfig = {
-      apiKey: "AIzaSyCnVWChmC7yIMpvU0OZRMda5nrIMdYLpiw",
-      authDomain: "praposal--response.firebaseapp.com",
-      databaseURL: "https://praposal--response-default-rtdb.firebaseio.com",
-      projectId: "praposal--response",
-      storageBucket: "praposal--response.firebasestorage.app",
-      messagingSenderId: "557398356613",
-      appId: "1:557398356613:web:376c94a2bdcc98f57aafec"
+<script>
+  // ✅ Your Firebase Config
+  const firebaseConfig = {
+    apiKey: "AIzaSyCnVWChmC7yIMpvU0OZRMda5nrIMdYLpiw",
+    authDomain: "praposal--response.firebaseapp.com",
+    databaseURL: "https://praposal--response-default-rtdb.firebaseio.com",
+    projectId: "praposal--response",
+    storageBucket: "praposal--response.firebasestorage.app",
+    messagingSenderId: "557398356613",
+    appId: "1:557398356613:web:376c94a2bdcc98f57aafec"
+  };
+
+  // ✅ Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
+  // ✅ Get current Indian time as string
+  function getIndianTime() {
+    return new Date().toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true
+    });
+  }
+
+  // ✅ Save answer with timestamp to Firebase (no overwrite)
+  function submitAnswer(answer) {
+    const response = {
+      answer: answer,
+      time: getIndianTime()
     };
 
-    // ✅ Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
-    // ✅ Save answer to database
-    function submitAnswer(answer) {
-      database.ref("proposal/response").set({
-        answer: answer,
-        timestamp: Date.now()
-      }).then(() => {
+    database.ref("proposal/responses").push(response)
+      .then(() => {
         document.getElementById("status").innerText = "Your answer has been recorded 💌";
-      }).catch(error => {
+      })
+      .catch((error) => {
         document.getElementById("status").innerText = "Error saving your answer: " + error.message;
       });
-    }
-  </script>
+  }
+</script>
 </body>
 </html>
